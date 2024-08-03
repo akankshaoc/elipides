@@ -2,13 +2,14 @@ package dev.akanksha.elipides.repositories;
 
 import dev.akanksha.elipides.models.User;
 import dev.akanksha.elipides.models.types.UserRole;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest(showSql = false)
+@DataJpaTest
 class UserRepositoryTest {
 
     UserRepository userRepository;
@@ -35,7 +36,7 @@ class UserRepositoryTest {
         assertEquals("god@test.com", testGod.getEmail());
     }
 
-    @Test
+    @Test @Transactional
     void validateUpdateUserProperties() {
         User user = User.builder()
                 .username("testgod")
