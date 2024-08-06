@@ -1,6 +1,7 @@
 package dev.akanksha.elipides.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,11 +17,15 @@ public class Blog {
     private long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Blog Title cannot be empty")
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank(message = "Blog Content cannot be null")
     private String content;
+
     private long upVotes;
+
     @ManyToOne
     @JoinColumn(
             name = "username",
@@ -29,7 +34,10 @@ public class Blog {
     )
     private User user;
 
+    @Column(nullable = false)
     private LocalDateTime firstCreated;
+
+    @Column(nullable = false)
     private LocalDateTime lastUpdates;
 
     @ManyToMany(
