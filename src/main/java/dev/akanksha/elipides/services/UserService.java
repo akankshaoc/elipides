@@ -6,9 +6,11 @@ import dev.akanksha.elipides.repositories.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,16 +18,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final Validator validator;
-
-    @Autowired
-    UserService(UserRepository userRepository, Validator validator) {
-        this.userRepository = userRepository;
-        this.validator = validator;
-    }
+    private final BCryptPasswordEncoder encoder;
 
     public List<User> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -38,9 +36,10 @@ public class UserService {
 
         User savedUser = null;
         try {
+            user.setPassword(encoder.encode(user.getPassword()));
             savedUser = userRepository.save(user);
         } catch (Exception e) {
-            throw new IntegrityException("email");
+            throw new IntegrityException(e.getMessage());
         }
 
         return savedUser;
