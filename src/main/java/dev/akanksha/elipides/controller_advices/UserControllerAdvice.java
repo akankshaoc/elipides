@@ -1,6 +1,7 @@
 package dev.akanksha.elipides.controller_advices;
 
 import dev.akanksha.elipides.exceptions.IntegrityException;
+import dev.akanksha.elipides.exceptions.ValueException;
 import dev.akanksha.elipides.models.Message;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(NoSuchElementException.class)
     ResponseEntity<Message> noSuchElementExceptionAdvice(NoSuchElementException e) {
+        return new ResponseEntity<>(new Message(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ValueException.class)
+    ResponseEntity<Message> valueExceptionAdvice(ValueException e) {
         return new ResponseEntity<>(new Message(e.getMessage()),
                 HttpStatus.BAD_REQUEST);
     }

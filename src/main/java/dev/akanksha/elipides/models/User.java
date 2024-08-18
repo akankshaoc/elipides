@@ -1,5 +1,6 @@
 package dev.akanksha.elipides.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.akanksha.elipides.models.types.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -35,6 +36,7 @@ public class User {
     @Column(nullable = false)
     @Length(min = 8, message = "password must be atleast 8 characters long")
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
 
     @Enumerated(EnumType.STRING)

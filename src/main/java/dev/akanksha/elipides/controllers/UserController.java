@@ -1,6 +1,7 @@
 package dev.akanksha.elipides.controllers;
 
 import dev.akanksha.elipides.exceptions.IntegrityException;
+import dev.akanksha.elipides.exceptions.ValueException;
 import dev.akanksha.elipides.models.Message;
 import dev.akanksha.elipides.models.User;
 import dev.akanksha.elipides.services.UserService;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("/{username}")
-    ResponseEntity<Message> updateUserDetails(@PathVariable("username") String username, @RequestBody Map<String, Object> updates) throws IntegrityException {
+    ResponseEntity<Message> updateUserDetails(@PathVariable("username") String username, @RequestBody Map<String, Object> updates) throws IntegrityException, ValueException {
         userService.updateUserDetails(username, updates);
         return new ResponseEntity<>(new Message("User details updated"), HttpStatus.OK);
     }

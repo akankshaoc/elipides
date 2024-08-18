@@ -1,7 +1,10 @@
 package dev.akanksha.elipides.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.akanksha.elipides.exceptions.IntegrityException;
+import dev.akanksha.elipides.exceptions.ValueException;
 import dev.akanksha.elipides.models.User;
+import dev.akanksha.elipides.models.types.UserRole;
 import dev.akanksha.elipides.repositories.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -31,8 +34,20 @@ public class UserService {
     }
 
     public User addUser(@Valid User user) throws IntegrityException {
+
+        //1. Checks for Uniqueness
         if(userRepository.findById(user.getUsername()).isPresent())
             throw new IntegrityException("user with the username " + user.getUsername() + " already exists");
+
+        if(userRepository.findByEmail(user.getEmail()).isPresent())
+            throw new IntegrityException("user with the email " + user.getEmail() + " already exists");
+
+        //2. Checks for explicit admin registration
+        if(user.getRole() != null
+                && !user.getRole().toString().equalsIgnoreCase("COMMON_USER"))
+            throw new IntegrityException("cannot register a user as ADMIN directly");
+
+        user.setRole(UserRole.COMMON_USER);
 
         User savedUser = null;
         try {
@@ -41,7 +56,6 @@ public class UserService {
         } catch (Exception e) {
             throw new IntegrityException(e.getMessage());
         }
-
         return savedUser;
     }
 
@@ -63,7 +77,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserDetails(String username, Map<String, Object> updates) throws IntegrityException, ConstraintViolationException {
+    public void updateUserDetails(String username, Map<String, Object> updates) throws IntegrityException, ConstraintViolationException, ValueException {
         User user = this.getUser(username);
         for(String key : updates.keySet()) {
             switch (key) {
@@ -72,6 +86,7 @@ public class UserService {
                 case "lastName" -> user.setLastName(updates.get(key).toString());
                 case "password" -> user.setPassword(updates.get(key).toString());
                 case "email" -> user.setEmail(updates.get(key).toString());
+                default -> throw new ValueException("This field is either non existent or not updatable");
             }
         }
 
