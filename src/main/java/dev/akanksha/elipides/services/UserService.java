@@ -49,6 +49,7 @@ public class UserService {
 
         user.setRole(UserRole.COMMON_USER);
 
+        //3. user registration
         User savedUser = null;
         try {
             user.setPassword(encoder.encode(user.getPassword()));
