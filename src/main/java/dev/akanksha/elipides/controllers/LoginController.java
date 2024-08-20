@@ -6,11 +6,9 @@ import dev.akanksha.elipides.services.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -22,4 +20,5 @@ public class LoginController {
                 loginService.logUserIn(loginRequest)
                 , HttpStatus.OK);
     }
+
 }

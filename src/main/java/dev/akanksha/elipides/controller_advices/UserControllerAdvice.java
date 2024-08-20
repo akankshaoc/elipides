@@ -1,5 +1,6 @@
 package dev.akanksha.elipides.controller_advices;
 
+import dev.akanksha.elipides.exceptions.AuthenticationException;
 import dev.akanksha.elipides.exceptions.IntegrityException;
 import dev.akanksha.elipides.exceptions.ValueException;
 import dev.akanksha.elipides.models.Message;
@@ -34,6 +35,12 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(ValueException.class)
     ResponseEntity<Message> valueExceptionAdvice(ValueException e) {
+        return new ResponseEntity<>(new Message(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<Message> authenticaitonUserAdvice(AuthenticationException e) {
         return new ResponseEntity<>(new Message(e.getMessage()),
                 HttpStatus.BAD_REQUEST);
     }
